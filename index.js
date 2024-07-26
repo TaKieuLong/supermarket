@@ -11,14 +11,13 @@ const swagger = require("./src/swagger.js");
 const restRouter = require("./src/routes/index.js");
 require("dotenv").config();
 app.use(express.json());
+//cors
 app.use(
-  cors({
-    origin: "*", // Địa chỉ cho phép truy cập, có thể thay thế bằng *
-    methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức cho phép
-    allowedHeaders: ["Content-Type", "Authorization"], // Các header cho phép
-    credentials: true, // Cho phép gửi cookie
+  cors((req, callback) => {
+    callback(null, { origin: true });
   })
 );
+
 require("./src/mongodb.js");
 
 const getUser = (token) => {
