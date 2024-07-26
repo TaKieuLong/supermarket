@@ -5,13 +5,14 @@ const bodyParser = require("body-parser");
 const typeDefs = require("./schema.js");
 const resolvers = require("./resolvers.js");
 const restRouter = require("./routes/index.js");
+const corsMiddleware = require("../src/middleware/corsMiddleware.js");
 const app = express();
+app.use(corsMiddleware);
 app.use(express.json());
 
 require("./mongodb.js");
 app.use(bodyParser.json());
 app.use("/api", restRouter);
-
 
 const server = new ApolloServer({ typeDefs, resolvers });
 await server.start().then(() => {
