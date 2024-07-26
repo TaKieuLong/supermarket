@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const { ApolloServer } = require("apollo-server-express");
 const bodyParser = require("body-parser");
@@ -10,7 +11,7 @@ const swagger = require("./src/swagger.js");
 const restRouter = require("./src/routes/index.js");
 require("dotenv").config();
 app.use(express.json());
-
+app.use(cors());
 require("./src/mongodb.js");
 
 const getUser = (token) => {
