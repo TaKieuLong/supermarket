@@ -11,7 +11,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: "http://localhost:4000",
+      url: "https://supermarket-5bkc.onrender.com/",
     },
   ],
   components: {
@@ -92,97 +92,97 @@ const swaggerDefinition = {
         },
       },
       Order: {
-        type: 'object',
-        required: ['customer', 'items', 'totalAmount', 'status'],
+        type: "object",
+        required: ["customer", "items", "totalAmount", "status"],
         properties: {
           id: {
-            type: 'string',
-            description: 'ID của đơn hàng',
+            type: "string",
+            description: "ID của đơn hàng",
           },
           customer: {
-            type: 'string',
-            description: 'ID của khách hàng',
+            type: "string",
+            description: "ID của khách hàng",
           },
           items: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'object',
+              type: "object",
               properties: {
                 product: {
-                  type: 'string',
-                  description: 'ID của sản phẩm',
+                  type: "string",
+                  description: "ID của sản phẩm",
                 },
                 quantity: {
-                  type: 'integer',
-                  description: 'Số lượng sản phẩm',
+                  type: "integer",
+                  description: "Số lượng sản phẩm",
                 },
                 price: {
-                  type: 'number',
-                  description: 'Giá của sản phẩm',
+                  type: "number",
+                  description: "Giá của sản phẩm",
                 },
               },
             },
           },
           totalAmount: {
-            type: 'number',
-            description: 'Tổng giá trị đơn hàng',
+            type: "number",
+            description: "Tổng giá trị đơn hàng",
           },
           status: {
-            type: 'string',
-            description: 'Trạng thái đơn hàng',
+            type: "string",
+            description: "Trạng thái đơn hàng",
           },
           orderDate: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Ngày đặt hàng',
+            type: "string",
+            format: "date-time",
+            description: "Ngày đặt hàng",
           },
           deliveryDate: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Ngày giao hàng',
+            type: "string",
+            format: "date-time",
+            description: "Ngày giao hàng",
           },
         },
       },
       OrderInput: {
-        type: 'object',
-        required: ['customer', 'items', 'status'],
+        type: "object",
+        required: ["customer", "items", "status"],
         properties: {
           customer: {
-            type: 'string',
-            description: 'ID của khách hàng',
+            type: "string",
+            description: "ID của khách hàng",
           },
           items: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'object',
+              type: "object",
               properties: {
                 product: {
-                  type: 'string',
-                  description: 'ID của sản phẩm',
+                  type: "string",
+                  description: "ID của sản phẩm",
                 },
                 quantity: {
-                  type: 'integer',
-                  description: 'Số lượng sản phẩm',
+                  type: "integer",
+                  description: "Số lượng sản phẩm",
                 },
                 price: {
-                  type: 'number',
-                  description: 'Giá của sản phẩm',
+                  type: "number",
+                  description: "Giá của sản phẩm",
                 },
               },
             },
           },
           totalAmount: {
-            type: 'number',
-            description: 'Tổng giá trị đơn hàng',
+            type: "number",
+            description: "Tổng giá trị đơn hàng",
           },
           status: {
-            type: 'string',
-            description: 'Trạng thái đơn hàng',
+            type: "string",
+            description: "Trạng thái đơn hàng",
           },
           deliveryDate: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Ngày giao hàng',
+            type: "string",
+            format: "date-time",
+            description: "Ngày giao hàng",
           },
         },
       },
