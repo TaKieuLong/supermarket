@@ -1,8 +1,8 @@
 const Product = require("../models/Product.model.js");
 const mongoose = require("mongoose");
 const Category = require("../models/Category.model.js");
-// const cloudinary = require("../utils/cloudinary.config.js");
-const cloudinary = require("cloudinary").v2;
+const cloudinary = require("../utils/cloudinary.config.js");
+// const cloudinary = require("cloudinary").v2;
 const upload = require("../middleware/upload.js");
 const fs = require("fs");
 const path = require("path");
