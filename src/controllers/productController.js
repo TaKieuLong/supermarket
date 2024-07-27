@@ -6,6 +6,7 @@ const cloudinary = require("../utils/cloudinary.config.js");
 const upload = require("../middleware/upload.js");
 const fs = require("fs");
 const path = require("path");
+require("dotenv").config();
 exports.getProducts = async (req, res) => {
   try {
     const {
