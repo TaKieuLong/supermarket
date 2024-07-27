@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const {
   getProducts,
@@ -10,7 +11,7 @@ const {
 const authMiddleware = require("../middleware/authMiddleware.js");
 const upload = require("../middleware/upload.js");
 const router = express.Router();
-require("dotenv").config();
+
 /**
  * @swagger
  * tags:

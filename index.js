@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 const mongoose = require("mongoose");
 const { ApolloServer } = require("apollo-server-express");
 const bodyParser = require("body-parser");
@@ -9,7 +10,7 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const swagger = require("./src/swagger.js");
 const restRouter = require("./src/routes/index.js");
-require("dotenv").config();
+
 app.use(express.json());
 //cors
 app.use(

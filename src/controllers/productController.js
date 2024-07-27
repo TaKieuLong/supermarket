@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Product = require("../models/Product.model.js");
 const mongoose = require("mongoose");
 const Category = require("../models/Category.model.js");
@@ -6,7 +7,7 @@ const cloudinary = require("../utils/cloudinary.config.js");
 const upload = require("../middleware/upload.js");
 const fs = require("fs");
 const path = require("path");
-require("dotenv").config();
+
 exports.getProducts = async (req, res) => {
   try {
     const {
@@ -71,12 +72,12 @@ exports.createProduct = async (req, res) => {
   try {
     const { name, description, price, category, sizes, colors } = req.body;
 
-    // Xử lý các tệp hình ảnh
+  
     const imageUploadPromises = req.files.map((file) => {
       return cloudinary.uploader
         .upload(file.path, { folder: "products" })
         .then((result) => {
-          // Xóa tệp hình ảnh sau khi upload thành công
+         
           fs.unlinkSync(file.path);
           return result.secure_url;
         })
