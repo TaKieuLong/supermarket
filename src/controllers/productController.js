@@ -1,17 +1,11 @@
 const Product = require("../models/Product.model.js");
 const mongoose = require("mongoose");
 const Category = require("../models/Category.model.js");
-const findCategoryIdByName = async (name) => {
-  const category = await Category.findOne({ name });
-  return category ? category._id : null;
-};
-
-function toObjectId(id) {
-  if (mongoose.Types.ObjectId.isValid(id)) {
-    return new mongoose.Types.ObjectId(id);
-  }
-  return null;
-}
+// const cloudinary = require("../utils/cloudinary.config.js");
+const cloudinary = require("cloudinary").v2;
+const upload = require("../middleware/upload.js");
+const fs = require("fs");
+const path = require("path");
 exports.getProducts = async (req, res) => {
   try {
     const {
@@ -23,14 +17,24 @@ exports.getProducts = async (req, res) => {
       maxPrice,
       sortByDate,
     } = req.query;
+
     const query = {};
 
     if (name) query.name = { $regex: name, $options: "i" };
-    if (category) query.category = toObjectId(category);
+    if (category) {
+      if (mongoose.Types.ObjectId.isValid(category)) {
+        query.category = new mongoose.Types.ObjectId(category);
+      } else {
+        return res.status(400).send({
+          code: 1,
+          mess: "ID danh mục không hợp lệ",
+        });
+      }
+    }
     if (minPrice) query.price = { ...query.price, $gte: Number(minPrice) };
     if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) };
     const sort = sortByDate ? { createdAt: -1 } : {};
-    console.log(query)
+    console.log(query);
     const products = await Product.find(query)
       .populate("category")
       .limit(Number(limit))
@@ -64,14 +68,31 @@ exports.getProductById = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, images, sizes, colors } =
-      req.body;
+    const { name, description, price, category, sizes, colors } = req.body;
+
+    // Xử lý các tệp hình ảnh
+    const imageUploadPromises = req.files.map((file) => {
+      return cloudinary.uploader
+        .upload(file.path, { folder: "products" })
+        .then((result) => {
+          // Xóa tệp hình ảnh sau khi upload thành công
+          fs.unlinkSync(file.path);
+          return result.secure_url;
+        })
+        .catch((err) => {
+          console.error("Cloudinary upload error:", err);
+          throw err;
+        });
+    });
+
+    const imageUrls = await Promise.all(imageUploadPromises);
+
     const newProduct = new Product({
       name,
       description,
       price,
       category,
-      images,
+      images: imageUrls,
       sizes,
       colors,
     });
@@ -81,26 +102,48 @@ exports.createProduct = async (req, res) => {
       .status(201)
       .json({ message: "Thêm sản phẩm mới thành công", data: newProduct });
   } catch (error) {
+    console.error("Server error:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, images, sizes, colors } =
-      req.body;
+    const { name, description, price, category, sizes, colors } = req.body;
     const product = await Product.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: "Sản phẩm không tồn tại" });
+    }
+
+    // Xử lý các tệp hình ảnh nếu có
+    let imageUrls = product.images;
+    if (req.files && req.files.length > 0) {
+      // Upload new images to Cloudinary
+      const imageUploadPromises = req.files.map((file) =>
+        cloudinary.uploader
+          .upload(file.path, { folder: "products" })
+          .then((result) => {
+            // Xóa tệp hình ảnh sau khi upload thành công
+            fs.unlinkSync(file.path);
+            return result.secure_url;
+          })
+          .catch((err) => {
+            console.error("Cloudinary upload error:", err);
+            throw err;
+          })
+      );
+
+      const uploadedImageUrls = await Promise.all(imageUploadPromises);
+      imageUrls = uploadedImageUrls; // Thay thế các URL hình ảnh cũ bằng các URL mới
     }
 
     product.name = name || product.name;
     product.description = description || product.description;
     product.price = price || product.price;
     product.category = category || product.category;
-    product.images = images || product.images;
     product.sizes = sizes || product.sizes;
     product.colors = colors || product.colors;
+    product.images = imageUrls;
 
     await product.save();
     res.status(200).json({
@@ -108,6 +151,7 @@ exports.updateProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
+    console.error("Server error:", error);
     res.status(500).json({ message: error.message });
   }
 };

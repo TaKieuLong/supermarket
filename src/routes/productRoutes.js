@@ -8,7 +8,7 @@ const {
   checkProductExists,
 } = require("../controllers/productController.js");
 const authMiddleware = require("../middleware/authMiddleware.js");
-
+const upload = require("../middleware/upload.js");
 const router = express.Router();
 
 /**
@@ -125,9 +125,38 @@ router.get("/:id", authMiddleware, getProductById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Tên sản phẩm
+ *               description:
+ *                 type: string
+ *                 description: Mô tả sản phẩm
+ *               price:
+ *                 type: number
+ *                 description: Giá sản phẩm
+ *               category:
+ *                 type: string
+ *                 description: Danh mục sản phẩm
+ *               sizes:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Các kích thước của sản phẩm
+ *               colors:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Các màu sắc của sản phẩm
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Các tệp hình ảnh của sản phẩm
  *     responses:
  *       201:
  *         description: The created product
@@ -138,7 +167,7 @@ router.get("/:id", authMiddleware, getProductById);
  *       500:
  *         description: Internal server error
  */
-router.post("/", authMiddleware, createProduct);
+router.post("/", authMiddleware, upload.array("images"), createProduct);
 
 /**
  * @swagger
@@ -158,9 +187,38 @@ router.post("/", authMiddleware, createProduct);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Tên sản phẩm
+ *               description:
+ *                 type: string
+ *                 description: Mô tả sản phẩm
+ *               price:
+ *                 type: number
+ *                 description: Giá sản phẩm
+ *               category:
+ *                 type: string
+ *                 description: Danh mục sản phẩm
+ *               sizes:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Các kích thước của sản phẩm
+ *               colors:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Các màu sắc của sản phẩm
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Các tệp hình ảnh của sản phẩm
  *     responses:
  *       200:
  *         description: The updated product
@@ -173,7 +231,7 @@ router.post("/", authMiddleware, createProduct);
  *       500:
  *         description: Internal server error
  */
-router.put("/:id", authMiddleware, updateProduct);
+router.put("/:id", authMiddleware, upload.array("images"), updateProduct);
 
 /**
  * @swagger
